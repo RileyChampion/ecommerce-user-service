@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN pip install -r dev.txt
+RUN pip install -r ./requirements/dev.txt
 
 EXPOSE 8000
 
