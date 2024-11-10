@@ -13,5 +13,6 @@ class UserAddress(Base):
     state:Mapped[str] = mapped_column(nullable=True)
     zip_code:Mapped[int] = mapped_column(nullable=True)
     country_code:Mapped[int] = mapped_column(nullable=True)
+    is_primary:Mapped[bool] = mapped_column(nullable=False, default=False)
 
-    user:Mapped["User"] = relationship(back_populates="address")
+    user:Mapped["User"] = relationship(back_populates="addresses")

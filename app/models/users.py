@@ -13,6 +13,6 @@ class User(Base):
     profile_pic:Mapped[str] = mapped_column(nullable=False)
     is_active:Mapped[bool] = mapped_column(default=True)
 
-    address = relationship("UserAddress", back_populates="user")
+    addresses = relationship("UserAddress", back_populates="user")
     roles = relationship("UserRoleAssignment", back_populates="user")
     preferences = relationship("UserPreference", back_populates="user")
