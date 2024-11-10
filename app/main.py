@@ -5,6 +5,6 @@ from app.config import settings
 
 app = FastAPI(title= "User Service")
 
-app.include_router(routes.router, prefix="/api/v1")
+# app.include_router(routes.router, prefix="/api/v1")
 
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
