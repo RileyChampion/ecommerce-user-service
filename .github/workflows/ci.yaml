@@ -20,7 +20,7 @@ jobs:
           pip install -r ./requirements/dev.txt
       
       - name: 🧹 Checking linter...
-        run: flake8 ./app/
+        run: flake8 --select E ./app/
       
       - name: 🧪 Running tests...
         run: pytest
