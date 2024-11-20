@@ -12,9 +12,14 @@ class UserAddressBase(BaseModel):
 
 class UserAddressCreate(UserAddressBase):
     user_id: int
+    is_primary: bool
 
 
 class UserAddressInfoUpdate(UserAddressBase):
+    is_primary: bool
+
+
+class UserAddressToggleIsPrimary(BaseModel):
     is_primary: bool
 
 

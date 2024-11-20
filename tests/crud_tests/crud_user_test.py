@@ -1,4 +1,5 @@
 from app.crud.user import (
+    get_all_users,
     get_user,
     create_user,
     update_user_info,
@@ -7,6 +8,13 @@ from app.crud.user import (
 )
 from app.models.users import User
 from app.schemas.user import UserCreate, UserInfoUpdate, UserPasswordUpdate
+
+
+def test_get_all_users(db_session, batch_create_users):
+    batch_create_users(10)
+    users = get_all_users(db_session)
+    assert len(users) == 10
+
 
 def test_get_user(db_session, create_user):
     test_user = create_user(
@@ -76,6 +84,7 @@ def test_delete_user(db_session, create_user):
     )
 
     delete_user(db_session, test_user.id)
+    db_session.commit()
 
     deleted_user = db_session.query(User).filter(User.id == 250).first()
     assert deleted_user is None
