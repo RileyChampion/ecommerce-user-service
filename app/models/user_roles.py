@@ -10,6 +10,7 @@ class UserRole(Base):
     role_id: Mapped[int] = mapped_column(primary_key=True)
     role_name: Mapped[str] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(
+        default=func.now(),
         server_default=func.now()
     )
     updated_at: Mapped[datetime] = mapped_column(
