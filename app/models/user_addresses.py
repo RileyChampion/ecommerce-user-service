@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, DateTime
+from sqlalchemy import ForeignKey
+from sqlalchemy.sql import func
 from app.db.session import Base
 from datetime import datetime
 
@@ -16,11 +17,13 @@ class UserAddress(Base):
     zip_code: Mapped[int] = mapped_column(nullable=True)
     country_code: Mapped[int] = mapped_column(nullable=True)
     is_primary: Mapped[bool] = mapped_column(nullable=False, default=False)
-    created_at: Mapped[DateTime] = mapped_column(
-        default=datetime.now(datetime.UTC)
+    created_at: Mapped[datetime] = mapped_column(
+        default=func.now(),
+        server_default=func.now()
     )
-    updated_at: Mapped[DateTime] = mapped_column(
-        default=datetime.now(datetime.UTC)
+    updated_at: Mapped[datetime] = mapped_column(
+        default=func.now(),
+        onupdate=func.now()
     )
 
     user = relationship("User", back_populates="addresses")

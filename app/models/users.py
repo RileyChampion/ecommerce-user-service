@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import DateTime
+from sqlalchemy.sql import func
 from app.db.session import Base
 from datetime import datetime
 
@@ -13,13 +13,18 @@ class User(Base):
     email: Mapped[str] = mapped_column(unique=True, index=True, nullable=False)
     telephone: Mapped[str] = mapped_column(nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
-    profile_pic: Mapped[str] = mapped_column(nullable=False)
-    is_active: Mapped[bool] = mapped_column(default=True)
-    created_at: Mapped[DateTime] = mapped_column(
-        default=datetime.now(datetime.UTC)
+    profile_pic: Mapped[str] = mapped_column(
+        nullable=False,
+        default="default.png"
     )
-    updated_at: Mapped[DateTime] = mapped_column(
-        default=datetime.now(datetime.UTC)
+    is_active: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(
+        default=func.now(),
+        server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        default=func.now(),
+        onupdate=func.now()
     )
 
     addresses = relationship("UserAddress", back_populates="user")
