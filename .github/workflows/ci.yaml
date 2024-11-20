@@ -22,8 +22,8 @@ jobs:
       - name: 🧹 Checking linter...
         run: flake8 --select E ./app/
       
-      - name: 🧪 Running tests...
-        run: pytest
+      - name: 🧪 Running tests and coverage...
+        run: coverage run --source=app -m pytest -v tests && coverage report --fail-under=80 -m
         env:
           DATABASE_URL: "sqlite:///./test.db"
           SECRET_KEY: "TEST"
