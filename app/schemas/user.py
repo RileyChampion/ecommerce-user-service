@@ -1,4 +1,8 @@
+from typing import List
 from pydantic import BaseModel, EmailStr
+from app.schemas.user_address import UserAddressResponse
+from app.schemas.user_preference import UserPreferenceResponse
+from app.schemas.user_role import UserRoleResponse
 
 
 class UserBase(BaseModel):
@@ -29,8 +33,11 @@ class UserPasswordUpdate(BaseModel):
     password: str
 
 
-class UserOut(UserBase):
+class UserResponse(UserBase):
     id: int
+    addresses: List[UserAddressResponse]
+    preferences: List[UserPreferenceResponse]
+    roles: List[UserRoleResponse]
 
     class Config:
         orm_mode = True
