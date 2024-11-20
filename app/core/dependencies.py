@@ -3,7 +3,7 @@ from app.db.session import SessionLocal
 
 
 def get_db():
-    db = SessionLocal()
+    db: Session = SessionLocal()
     try:
         yield db
     finally:

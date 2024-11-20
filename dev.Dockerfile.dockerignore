@@ -4,3 +4,5 @@ node_modules/
 __pycache__/
 .github/
 ./requirements/prod.txt
+.pytest_cache/
+./tests

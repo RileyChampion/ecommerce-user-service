@@ -13,13 +13,14 @@ class UserFactory:
         current_id = cls._id_counter
         cls._id_counter += 1
         return current_id
-        
+
     @classmethod
     def create(cls, db_session, **kwargs) -> User:
         fake_user = User(
             id=kwargs.get("id", cls._get_next_id()),
             username=kwargs.get("username", fake.user_name()),
-            full_name=kwargs.get("full_name", fake.name()),
+            first_name=kwargs.get("first_name", fake.first_name()),
+            last_name=kwargs.get("last_name", fake.last_name()),
             email=kwargs.get("email", fake.email()),
             telephone=kwargs.get("telephone", fake.phone_number()),
             password=kwargs.get("password", fake.password()),

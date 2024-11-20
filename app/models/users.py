@@ -7,9 +7,10 @@ from datetime import datetime
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
     username: Mapped[str] = mapped_column(unique=True)
-    full_name: Mapped[str] = mapped_column(nullable=False)
+    first_name: Mapped[str] = mapped_column(nullable=False)
+    last_name: Mapped[str] = mapped_column(nullable=False)
     email: Mapped[str] = mapped_column(unique=True, index=True, nullable=False)
     telephone: Mapped[str] = mapped_column(nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
@@ -27,6 +28,6 @@ class User(Base):
         onupdate=func.now()
     )
 
-    addresses = relationship("UserAddress", back_populates="user")
-    roles = relationship("UserRoleAssignment", back_populates="user")
-    preferences = relationship("UserPreference", back_populates="user")
+    addresses = relationship("UserAddress", back_populates="user", cascade='all, delete')
+    roles = relationship("UserRoleAssignment", back_populates="user", cascade='all, delete')
+    preferences = relationship("UserPreference", back_populates="user", cascade='all, delete')

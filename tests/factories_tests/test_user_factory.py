@@ -6,11 +6,13 @@ def test_user_factory_create(db_session: Session):
     user = UserFactory.create(
         db_session,
         username="test_username",
-        full_name="John Doe",
+        first_name="John",
+        last_name="Doe",
         password="secure_password"
         )
     assert user.username == "test_username"
-    assert user.full_name == "John Doe"
+    assert user.first_name == "John"
+    assert user.last_name == "Doe"
     assert user.password == "secure_password"
 
 def test_user_factory_batch_create(db_session: Session):

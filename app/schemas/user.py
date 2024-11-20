@@ -2,17 +2,31 @@ from pydantic import BaseModel, EmailStr
 
 
 class UserBase(BaseModel):
-    full_name: str | None = None
+    username: str
+    first_name: str
+    last_name: str
     email: EmailStr
+    telephone: str
+    profile_pic: str
 
 
 class UserCreate(UserBase):
     password: str
+    profile_pic: str
 
 
-class UserUpdate(BaseModel):
-    full_name: str | None = None
-    is_active: bool | None = None
+class UserInfoUpdate(BaseModel):
+    username: str
+    first_name: str
+    last_name: str
+    email: EmailStr
+    telephone: str
+    profile_pic: str
+    is_active: bool
+
+
+class UserPasswordUpdate(BaseModel):
+    password: str
 
 
 class UserOut(UserBase):
