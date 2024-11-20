@@ -25,7 +25,7 @@ def seed_data(db):
     customer = UserRoleFactory.create(db, role_name="Customer")
     
     # Create Users
-    users: List[User] = UserFactory.create_batch(db, 30)
+    users: List[User] = UserFactory.batch_create(db, 30)
 
     # Create User Addresses, Preferences and Role Assignment
     for user in users:

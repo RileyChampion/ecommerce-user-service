@@ -31,7 +31,7 @@ class UserFactory:
         return fake_user
 
     @classmethod
-    def create_batch(cls, db_session, size=10, **kwargs) -> List[User]:
+    def batch_create(cls, db_session, size=10, **kwargs) -> List[User]:
         users = []
         for _ in range(size):
             users.append(cls.create(db_session, **kwargs))

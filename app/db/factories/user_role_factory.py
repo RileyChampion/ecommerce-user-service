@@ -24,6 +24,7 @@ class UserRoleFactory():
         db_session.commit()
         return fake_role
 
+    @classmethod
     def batch_create(cls, db_session, size=10, **kwargs) -> List[UserRole]:
         user_roles = []
         for _ in range(size):

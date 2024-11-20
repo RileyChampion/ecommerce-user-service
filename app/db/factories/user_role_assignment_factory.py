@@ -25,3 +25,12 @@ class UserRoleAssignmentFactory():
         db_session.add(fake_user_role_assignment)
         db_session.commit()
         return fake_user_role_assignment
+
+    @classmethod
+    def batch_create(cls, db_session, size=10, **kwargs):
+        assignments = []
+        for _ in range(size):
+            assignments.append(
+                cls.create(db_session, **kwargs)
+            )
+        return assignments
