@@ -39,7 +39,7 @@ def update_address_info(db: Session, address_id: int, address: UserAddressInfoUp
 
     if not found_address:
         raise ValueError("Address not found.")
-    
+
     found_address.address_line1 = address.address_line1
     found_address.address_line2 = address.address_line2
     found_address.city = address.city
@@ -58,7 +58,7 @@ def update_address_toggle_is_primary(db: Session, address_id: int, address: User
 
     if not found_address:
         raise ValueError("Address not found.")
-    
+
     found_address.is_primary = address.is_primary
 
     return found_address
@@ -71,5 +71,5 @@ def delete_address(db: Session, address_id: int) -> None:
 
     if not found_address:
         raise ValueError("Address not found.")
-    
+
     db.delete(found_address)

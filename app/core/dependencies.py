@@ -7,4 +7,5 @@ def get_db():
     try:
         yield db
     finally:
+        print("Closing the session...")
         db.close()

@@ -6,3 +6,5 @@ __pycache__/
 *.db
 .coverage
 .pytest_cache/
+.DS_Store
+htmlcov/

@@ -21,7 +21,7 @@ class UserAddressFactory():
             address_id=kwargs.get("address_id", current_id),
             user_id=kwargs.get("user_id", current_id),
             address_line1=kwargs.get("address_line1", fake.street_address()),
-            address_line2=kwargs.get("address_line2", None),
+            address_line2=kwargs.get("address_line2", fake.administrative_unit()),
             city=kwargs.get("city", fake.city()),
             state=kwargs.get("state", fake.state()),
             zip_code=kwargs.get("zip_code", fake.zipcode()),

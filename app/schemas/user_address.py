@@ -1,4 +1,4 @@
-from pydantic import BaseModel, PositiveInt
+from pydantic import BaseModel
 
 
 class UserAddressBase(BaseModel):
@@ -6,8 +6,8 @@ class UserAddressBase(BaseModel):
     address_line2: str
     city: str
     state: str
-    zip_code: PositiveInt
-    country_code: PositiveInt
+    zip_code: int
+    country_code: str
 
 
 class UserAddressCreate(UserAddressBase):

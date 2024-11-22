@@ -26,7 +26,7 @@ def create_user(db: Session, user: UserCreate) -> User:
         password=user.password,
         profile_pic=user.profile_pic
     )
-    
+
     return created_user
 
 
@@ -34,7 +34,7 @@ def update_user_info(db: Session, user_id: int, update_info: UserInfoUpdate) -> 
     user_found = db.query(User).filter(User.id == user_id).first()
 
     if not user_found:
-        raise ValueError("User not found")
+        raise ValueError("User not found.")
 
     user_found.username = update_info.username
     user_found.first_name = update_info.first_name
@@ -51,10 +51,10 @@ def update_user_password(db: Session, user_id: int, update_password: UserPasswor
     user_found = db.query(User).filter(User.id == user_id).first()
 
     if not user_found:
-        raise ValueError("User not found")
+        raise ValueError("User not found.")
 
     user_found.password = update_password.password
-    
+
     return user_found
 
 
@@ -62,6 +62,6 @@ def delete_user(db: Session, user_id: int) -> None:
     found_user = db.query(User).filter(User.id == user_id).first()
 
     if not found_user:
-        raise ValueError("User not found")
+        raise ValueError("User not found.")
 
     db.delete(found_user)
