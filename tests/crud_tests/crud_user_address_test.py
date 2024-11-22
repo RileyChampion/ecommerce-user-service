@@ -16,6 +16,7 @@ def test_get_all_addresses(db_session, batch_create_addresses):
     addresses = get_all_addresses(db_session)
     assert len(addresses) == 10
 
+
 def test_get_address(db_session, create_address):
     test_address = create_address(
         address_id=1000
@@ -68,6 +69,7 @@ def test_update_address_info(db_session, create_address):
 
     assert updated_address.address_line1 == "New Address Line"
 
+
 def test_test_update_address_info_not_found(db_session):
     updater_address_info = UserAddressInfoUpdate(
         address_line1="Sample Address Line Rd",
@@ -98,6 +100,7 @@ def test_update_address_toggle_is_primary(db_session, create_address):
 
     assert updated_address.is_primary == True
 
+
 def test_update_address_toggle_is_primary_not_found(db_session):
     updater_address_info_toggle = UserAddressToggleIsPrimary(
         is_primary=True
@@ -121,6 +124,7 @@ def test_delete_address(db_session, create_address):
     ).first()
 
     assert deleted_address is None
+
 
 def test_delete_address_not_found(db_session):
     with pytest.raises(ValueError) as exec_info:

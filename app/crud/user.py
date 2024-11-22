@@ -27,41 +27,44 @@ def create_user(db: Session, user: UserCreate) -> User:
         profile_pic=user.profile_pic
     )
 
+    db.add(created_user)
     return created_user
 
 
 def update_user_info(db: Session, user_id: int, update_info: UserInfoUpdate) -> User:
-    user_found = db.query(User).filter(User.id == user_id).first()
+    updating_user = db.query(User).filter(User.id == user_id).first()
 
-    if not user_found:
+    if not updating_user:
         raise ValueError("User not found.")
 
-    user_found.username = update_info.username
-    user_found.first_name = update_info.first_name
-    user_found.last_name = update_info.last_name
-    user_found.email = update_info.email
-    user_found.telephone = update_info.telephone
-    user_found.profile_pic = update_info.profile_pic
-    user_found.is_active = update_info.is_active
+    updating_user.username = update_info.username
+    updating_user.first_name = update_info.first_name
+    updating_user.last_name = update_info.last_name
+    updating_user.email = update_info.email
+    updating_user.telephone = update_info.telephone
+    updating_user.profile_pic = update_info.profile_pic
+    updating_user.is_active = update_info.is_active
 
-    return user_found
+    db.add(updating_user)
+    return updating_user
 
 
 def update_user_password(db: Session, user_id: int, update_password: UserPasswordUpdate) -> User:
-    user_found = db.query(User).filter(User.id == user_id).first()
+    updating_user = db.query(User).filter(User.id == user_id).first()
 
-    if not user_found:
+    if not updating_user:
         raise ValueError("User not found.")
 
-    user_found.password = update_password.password
+    updating_user.password = update_password.password
 
-    return user_found
+    db.add(updating_user)
+    return updating_user
 
 
 def delete_user(db: Session, user_id: int) -> None:
-    found_user = db.query(User).filter(User.id == user_id).first()
+    deleting_user = db.query(User).filter(User.id == user_id).first()
 
-    if not found_user:
+    if not deleting_user:
         raise ValueError("User not found.")
 
-    db.delete(found_user)
+    db.delete(deleting_user)
