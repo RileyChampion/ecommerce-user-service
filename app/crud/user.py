@@ -23,7 +23,7 @@ def create_user(db: Session, user: UserCreate) -> User:
         last_name=user.last_name,
         email=user.email,
         telephone=user.telephone,
-        password=user.password,
+        hashed_password=user.password,
         profile_pic=user.profile_pic
     )
 
@@ -55,7 +55,7 @@ def update_user_password(db: Session, user_id: int, update_password: UserPasswor
     if not updating_user:
         raise ValueError("User not found.")
 
-    updating_user.password = update_password.password
+    updating_user.hashed_password = update_password.password
 
     db.add(updating_user)
     return updating_user

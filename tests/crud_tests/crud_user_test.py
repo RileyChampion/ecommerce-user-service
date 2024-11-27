@@ -42,7 +42,7 @@ def test_create_user(db_session):
     assert created_user.last_name == "Doe"
     assert created_user.email == "testemail@gmail.com"
     assert created_user.telephone == "123-312-5543"
-    assert created_user.password == "super_strong_password"
+    assert created_user.hashed_password == "super_strong_password"
     assert created_user.profile_pic == "default.png"
 
 
@@ -72,7 +72,6 @@ def test_update_user_info_not_found(db_session):
         last_name="Doe",
         email="testemail@gmail.com",
         telephone="123-312-5543",
-        password="super_strong_password",
         profile_pic="default.png",
         is_active=False
     )
@@ -93,7 +92,7 @@ def test_update_user_password(db_session, create_user):
 
     updated_user = update_user_password(db_session, test_user.id, update_password)
 
-    assert updated_user.password == "N3WsTr0nGP4sSw0rD"
+    assert updated_user.hashed_password == "N3WsTr0nGP4sSw0rD"
 
 def test_update_user_password_not_found(db_session):
     update_password = UserPasswordUpdate(

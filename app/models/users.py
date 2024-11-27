@@ -13,7 +13,7 @@ class User(Base):
     last_name: Mapped[str] = mapped_column(nullable=False)
     email: Mapped[str] = mapped_column(unique=True, index=True, nullable=False)
     telephone: Mapped[str] = mapped_column(nullable=False)
-    password: Mapped[str] = mapped_column(nullable=False)
+    hashed_password: Mapped[str] = mapped_column(nullable=False)
     profile_pic: Mapped[str] = mapped_column(
         nullable=False,
         default="default.png"

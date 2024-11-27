@@ -8,7 +8,7 @@ from datetime import datetime
 class UserPreference(Base):
     __tablename__ = "user_preferences"
 
-    preference_id: Mapped[int] = mapped_column(primary_key=True)
+    preference_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
     preference_type: Mapped[str] = mapped_column(nullable=False)
     preference_value: Mapped[str] = mapped_column(nullable=False)

@@ -8,7 +8,7 @@ from datetime import datetime
 class UserAddress(Base):
     __tablename__ = 'user_addresses'
 
-    address_id: Mapped[int] = mapped_column(primary_key=True)
+    address_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
     address_line1: Mapped[str] = mapped_column(nullable=True)
     address_line2: Mapped[str] = mapped_column(nullable=True)

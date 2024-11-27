@@ -8,7 +8,7 @@ from datetime import datetime
 class UserRoleAssignment(Base):
     __tablename__ = "user_role_assignments"
 
-    assignment_id: Mapped[int] = mapped_column(primary_key=True)
+    assignment_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
     role_id: Mapped[int] = mapped_column(ForeignKey('user_roles.role_id'))
     created_at: Mapped[datetime] = mapped_column(

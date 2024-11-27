@@ -23,9 +23,9 @@ class UserFactory:
             last_name=kwargs.get("last_name", fake.last_name()),
             email=kwargs.get("email", fake.email()),
             telephone=kwargs.get("telephone", fake.phone_number()),
-            password=kwargs.get("password", fake.password()),
+            hashed_password=kwargs.get("hashed_password", fake.password()),
             profile_pic=kwargs.get("profile_pic", "default.png"),
-            is_active=kwargs.get("profile_pic", False)
+            is_active=kwargs.get("is_active", False)
         )
         db_session.add(fake_user)
         db_session.commit()
