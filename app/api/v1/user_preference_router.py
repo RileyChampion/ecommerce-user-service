@@ -1,5 +1,9 @@
-from fastapi import APIRouter, Path
+from fastapi import APIRouter, Path, Depends
 from typing import Annotated
+from app.models.users import User
+from app.core.security import (
+    get_current_user
+)
 # from fastapi import APIRouter, Depends, HTTPException
 # from sqlalchemy.orm import Session
 # from app.schemas.user import UserCreate, UserOut
@@ -13,20 +17,24 @@ class PreferenceFilter:
     pass
 
 
-@router.get("/all", tags=["userPreference"])
-async def user_preference_get_all():
+@router.get("/all", tags=["Preferences"])
+async def user_preference_get_all(
+    current_user: User = Depends(get_current_user)
+):
     return []
 
 
-@router.get("{user_id}/get", tags=["userPreference"])
+@router.get("{user_id}/get", tags=["Preferences"])
 async def user_preference_get(
-    user_id: Annotated[int, Path(title="The ID of a user to get")]
+    user_id: Annotated[int, Path(title="The ID of a user to get")],
+    current_user: User = Depends(get_current_user)
 ):
     return {user_id}
 
 
-@router.patch("/{user_id}/set", tags=["userPreference"])
+@router.patch("/{user_id}/set", tags=["Preferences"])
 async def user_preference_set(
-    user_id: Annotated[int, Path(title="The ID of a user to get")]
+    user_id: Annotated[int, Path(title="The ID of a user to get")],
+    current_user: User = Depends(get_current_user)
 ):
     return {}

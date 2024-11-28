@@ -21,48 +21,50 @@ class UserFilterParams(BaseModel):
     order_by: Literal["created_at", "updated_at"] = "created_at"
 
 
-@router.get("/users", tags=["users"], status_code=200)
+@router.get("/users", status_code=200)
 async def get_users(
-    filter_query: Annotated[UserFilterParams, Query()]
+    filter_query: Annotated[UserFilterParams, Query()],
+    current_user: User = Depends(get_current_user)
 ):
     return []
 
 
-@router.get("/{user_id}", tags=["users"], status_code=200)
+@router.get("/{user_id}", status_code=200)
 async def get_user_id(
-    user_id: Annotated[int, Path(title="The ID of a user to get")]
+    user_id: Annotated[int, Path(title="The ID of a user to get")],
+    current_user: User = Depends(get_current_user)
 ):
     return {}
 
 
-@router.get("/{username}", tags=["users"], status_code=200)
+@router.get("/{username}", status_code=200)
 async def get_user_username(
-    username: Annotated[str, Path(title="The USERNAME of a user to get")]
+    username: Annotated[str, Path(title="The USERNAME of a user to get")],
+    current_user: User = Depends(get_current_user)
 ):
     return {}
 
 
-@router.post("/create", tags=["users"], status_code=201)
-async def create_user():
+@router.post("/create", status_code=201)
+async def create_user(
+    current_user: User = Depends(get_current_user)
+):
     return {}
 
 
-@router.delete("/delete/{user_id}", tags=["users"])
+@router.delete("/delete/{user_id}")
 async def delete_user(
-    user_id: Annotated[int, Path(title="The ID of a user to get")]
+    user_id: Annotated[int, Path(title="The ID of a user to get")],
+    current_user: User = Depends(get_current_user)
 ):
     return {}
 
 
-@router.patch("/update/{user_id}", tags=["users"])
+@router.patch("/update/{user_id}")
 async def update_user(
-    user_id: Annotated[int, Path(title="The ID of a user to get")]
+    user_id: Annotated[int, Path(title="The ID of a user to get")],
+    current_user: User = Depends(get_current_user)
 ):
-    return {}
-
-
-@router.patch("/assign", tags=["userAssign"])
-async def assign_user_role():
     return {}
 
 
@@ -72,5 +74,7 @@ async def login(current_user: User = Depends(get_current_user)):
 
 
 @router.post("/logout")
-async def logout():
+async def logout(
+    current_user: User = Depends(get_current_user)
+):
     pass
