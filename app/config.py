@@ -12,7 +12,7 @@ class Settings(BaseSettings):
 
     # App settings
     PROJECT_NAME: str = "User Service API"
-    API_V1_STR: str = "/api/v1"
+    API_VERSION: str = "/api/v1"
 
     class Config:
         env_file = ".env"

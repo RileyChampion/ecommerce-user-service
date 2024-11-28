@@ -22,6 +22,7 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     user_id: Optional[str]
     username: Optional[str]
+    expires: Optional[int]
 
 
 # Password hashing context
@@ -65,16 +66,22 @@ def decode_access_token(token: Annotated[str, Depends(oauth2_scheme)]) -> Option
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=settings.ALGORITHM)
         user_id: str = payload.get("sub")
         username: str = payload.get("username")
-        if not username or not user_id:
-            raise credentials_exception
-        return TokenData(user_id=user_id, username=username)
-    except JWTError as e:
-        print(e)
+        expires: str = payload.get("exp")
+        if not username or not user_id or not expires:
+            raise JWTError
+        return TokenData(
+            user_id=user_id,
+            username=username,
+            expires=expires
+        )
+    except JWTError:
+        print("Token error...")
         raise credentials_exception
 
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
     token_data = decode_access_token(token)
+    print(token_data)
 
     user = get_user(db, token_data.user_id)
     if user is None:
