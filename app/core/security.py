@@ -67,8 +67,9 @@ def decode_access_token(token: Annotated[str, Depends(oauth2_scheme)]) -> Option
         username: str = payload.get("username")
         if not username or not user_id:
             raise credentials_exception
-        return TokenData(username=username)
-    except JWTError:
+        return TokenData(user_id=user_id, username=username)
+    except JWTError as e:
+        print(e)
         raise credentials_exception
 
 
@@ -99,7 +100,7 @@ def authenticate_user(db: Session, username: str, password: str):
 def login_user(db: Session, username: str, password: str):
     user = authenticate_user(db, username, password)
     access_token = create_access_token(
-        data={"sub": user.id, "username": user.username},
+        data={"sub": str(user.id), "username": user.username},
         expires_delta=timedelta(settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     return {"access_token": access_token, "token_type": "bearer"}

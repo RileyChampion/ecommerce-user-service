@@ -1,6 +1,10 @@
-from fastapi import APIRouter, Path, Query
+from fastapi import APIRouter, Path, Query, Depends
 from pydantic import BaseModel, Field
 from typing import Annotated, Literal
+from app.models.users import User
+from app.core.security import (
+    get_current_user
+)
 
 # from fastapi import APIRouter, Depends, HTTPException
 # from sqlalchemy.orm import Session
@@ -60,3 +64,13 @@ async def update_user(
 @router.patch("/assign", tags=["userAssign"])
 async def assign_user_role():
     return {}
+
+
+@router.post("/login")
+async def login(current_user: User = Depends(get_current_user)):
+    return {}
+
+
+@router.post("/logout")
+async def logout():
+    pass
