@@ -14,9 +14,10 @@ def test_user_address_factory_create(db_session: Session, create_user):
     assert preference.preference_value == "Pref Value"
     assert preference.user_id == user.id
 
+
 def test_user_address_factory_batch_create(db_session: Session):
     roles = UserPreferenceFactory.batch_create(
         db_session,
         size=5
-        )
+    )
     assert len(roles) == 5

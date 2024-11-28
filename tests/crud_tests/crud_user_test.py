@@ -65,6 +65,7 @@ def test_update_user_info(db_session, create_user):
 
     assert updated_user.username == "NewUserName"
 
+
 def test_update_user_info_not_found(db_session):
     update_info = UserInfoUpdate(
         username="usernameTest",
@@ -81,6 +82,7 @@ def test_update_user_info_not_found(db_session):
     
     assert exec_info.value.args[0] == "User not found."
 
+
 def test_update_user_password(db_session, create_user):
     test_user = create_user(
         password="weakpassword"
@@ -94,6 +96,7 @@ def test_update_user_password(db_session, create_user):
 
     assert updated_user.hashed_password == "N3WsTr0nGP4sSw0rD"
 
+
 def test_update_user_password_not_found(db_session):
     update_password = UserPasswordUpdate(
         password="N3WsTr0nGP4sSw0rD"
@@ -103,6 +106,7 @@ def test_update_user_password_not_found(db_session):
         update_user_password(db_session, 250, update_password)
     
     assert exec_info.value.args[0] == "User not found."
+
 
 def test_delete_user(db_session, create_user):
     test_user = create_user(
@@ -114,6 +118,7 @@ def test_delete_user(db_session, create_user):
 
     deleted_user = db_session.query(User).filter(User.id == 250).first()
     assert deleted_user is None
+
 
 def test_delete_user_not_found(db_session):
     with pytest.raises(ValueError) as exec_info:

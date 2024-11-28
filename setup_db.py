@@ -27,6 +27,13 @@ def seed_data(db):
     # Create Users
     users: List[User] = UserFactory.batch_create(db, 30)
 
+    test_user: User = UserFactory.create(
+        db,
+        username="test_user",
+        hashed_password="password"
+    )
+    users.append(test_user)
+
     # Create User Addresses, Preferences and Role Assignment
     for user in users:
         UserAddressFactory.create(db, user_id=user.id)

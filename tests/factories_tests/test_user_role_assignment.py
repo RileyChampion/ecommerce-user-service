@@ -13,9 +13,10 @@ def test_user_role_assignment_factory_create(db_session: Session, create_user, c
     assert assignment.user_id == test_user.id
     assert assignment.role_id == test_role.role_id
 
+
 def test_user_address_factory_batch_create(db_session: Session):
     roles = UserRoleAssignmentFactory.batch_create(
         db_session,
         size=5
-        )
+    )
     assert len(roles) == 5

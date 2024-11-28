@@ -47,7 +47,7 @@ def test_create_address(db_session):
     assert created_address.state == "NY"
     assert created_address.zip_code == 12939
     assert created_address.country_code == "DS"
-    assert created_address.is_primary == False
+    assert created_address.is_primary is False
 
 
 def test_update_address_info(db_session, create_address):
@@ -98,7 +98,7 @@ def test_update_address_toggle_is_primary(db_session, create_address):
 
     updated_address = update_address_toggle_is_primary(db_session, test_address.address_id, updater_address_info_toggle)
 
-    assert updated_address.is_primary == True
+    assert updated_address.is_primary is True
 
 
 def test_update_address_toggle_is_primary_not_found(db_session):
@@ -113,7 +113,7 @@ def test_update_address_toggle_is_primary_not_found(db_session):
 
 def test_delete_address(db_session, create_address):
     test_address = create_address(
-        id = 250
+        id=250
     )
 
     delete_address(db_session, test_address.address_id)

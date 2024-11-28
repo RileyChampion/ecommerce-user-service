@@ -1,6 +1,7 @@
 from typing import List
 from faker import Faker
 from app.models import User
+from app.core.security import get_password_hash
 
 fake = Faker()
 
@@ -23,7 +24,7 @@ class UserFactory:
             last_name=kwargs.get("last_name", fake.last_name()),
             email=kwargs.get("email", fake.email()),
             telephone=kwargs.get("telephone", fake.phone_number()),
-            hashed_password=kwargs.get("hashed_password", fake.password()),
+            hashed_password=get_password_hash(kwargs.get("hashed_password", fake.password())),
             profile_pic=kwargs.get("profile_pic", "default.png"),
             is_active=kwargs.get("is_active", False)
         )

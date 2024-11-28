@@ -20,7 +20,7 @@ jobs:
           pip install -r ./requirements/dev.txt
       
       - name: 🧹 Checking linter...
-        run: flake8 --select E ./app/
+        run: flake8 ./app --select E ; flake8 ./tests --select E
       
       - name: 🧪 Running tests and coverage...
         run: coverage run --source=app -m pytest -v tests && coverage report --fail-under=80 -m
