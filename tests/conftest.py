@@ -9,6 +9,7 @@ from app.db.factories.user_role_factory import UserRoleFactory
 from app.db.factories.user_factory import UserFactory
 from app.db.factories.user_address_factory import UserAddressFactory
 from app.db.factories.user_preference_factory import UserPreferenceFactory
+from app.db.factories.user_role_assignment_factory import UserRoleAssignmentFactory
 from app.core.security import verify_password
 
 SQLALCHEMY_TEST_DATABASE_URL = "sqlite:///./test.db"
@@ -55,6 +56,13 @@ def create_preference(db_session):
     def _create_preference(**kwargs):
         return UserPreferenceFactory.create(db_session, **kwargs)
     return _create_preference
+
+
+@pytest.fixture
+def create_role_assignment(db_session):
+    def _create_role_assignment(**kwargs):
+        return UserRoleAssignmentFactory.create(db_session, **kwargs)
+    return _create_role_assignment
 
 
 # Factories - Batch

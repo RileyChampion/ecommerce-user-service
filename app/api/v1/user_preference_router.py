@@ -18,14 +18,14 @@ class PreferenceFilter:
 
 
 @router.get("/all", tags=["Preferences"])
-async def user_preference_get_all(
+async def get_all_user_preferences(
     current_user: User = Depends(get_current_user)
 ):
     return []
 
 
 @router.get("{user_id}/get", tags=["Preferences"])
-async def user_preference_get(
+async def get_user_preferences(
     user_id: Annotated[int, Path(title="The ID of a user to get")],
     current_user: User = Depends(get_current_user)
 ):
@@ -33,7 +33,7 @@ async def user_preference_get(
 
 
 @router.patch("/{user_id}/set", tags=["Preferences"])
-async def user_preference_set(
+async def set_user_preference(
     user_id: Annotated[int, Path(title="The ID of a user to get")],
     current_user: User = Depends(get_current_user)
 ):

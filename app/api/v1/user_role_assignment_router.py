@@ -12,3 +12,10 @@ async def assign_user_role(
     current_user: User = Depends(get_current_user)
 ):
     return {}
+
+
+@router.delete("/unassign")
+async def unassign_user_role(
+    current_user: User = Depends(get_current_user)
+):
+    return {}
