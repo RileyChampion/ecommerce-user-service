@@ -1,11 +1,37 @@
 from typing import List, Union
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session, joinedload, contains_eager
+from sqlalchemy import and_
 from app.models.users import User
+from app.models.user_role_assignments import UserRoleAssignment
+from app.models.user_role_assignments import UserRoleAssignment
 from app.schemas.user import UserCreate, UserInfoUpdate, UserPasswordUpdate
+from app.schemas.filters import UserFilter
 
 
-def get_all_users(db: Session) -> List[User]:
-    return db.query(User).all()
+def get_all_users(db: Session, filter_params: UserFilter) -> List[User]:
+    filters = []
+    if filter_params.user_id:
+        filters.append(User.id == filter_params.user_id)
+    if filter_params.username:
+        filters.append(User.username == filter_params.username)
+    if filter_params.first_name:
+        filters.append(User.first_name == filter_params.first_name)
+    if filter_params.last_name:
+        filters.append(User.last_name == filter_params.last_name)
+    if filter_params.email:
+        filters.append(User.email == filter_params.email)
+    if filter_params.telephone:
+        filters.append(User.telephone == filter_params.telephone)
+    
+    filters.append(User.is_active == (filter_params.is_active == "true"))
+
+    print(filters)
+
+    limit = filter_params.limit
+    offset = filter_params.offset * filter_params.limit
+    return db.query(User).filter(and_(*filters))\
+        .offset(offset)\
+        .limit(limit).all()
 
 
 def get_user(db: Session, user_id: int) -> Union[User, None]:

@@ -14,17 +14,6 @@ def create_role_assignment(db: Session, created_assignment: UserRoleAssignmentCr
     return created_assignment
 
 
-def delete_role_assignment_assignment_id(db: Session, assignment_id: int):
-    deleting_assignment = db.query(UserRoleAssignment).filter(
-        UserRoleAssignment.assignment_id == assignment_id
-    ).first()
-
-    if not deleting_assignment:
-        raise ValueError("Role Assignment not found.")
-
-    db.delete(deleting_assignment)
-
-
 def delete_role_assignment_role_id_user_id(db: Session, role_id: int, user_id: int):
     deleting_assignment = db.query(UserRoleAssignment).filter(
         UserRoleAssignment.role_id == role_id,

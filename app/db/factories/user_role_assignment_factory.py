@@ -18,7 +18,6 @@ class UserRoleAssignmentFactory():
     def create(cls, db_session, **kwargs) -> UserRoleAssignment:
         current_id = cls._get_next_id()
         fake_user_role_assignment = UserRoleAssignment(
-            assignment_id=kwargs.get("assignment_id", current_id),
             user_id=kwargs.get("user_id", current_id),
             role_id=kwargs.get("role_id", current_id),
         )

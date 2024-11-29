@@ -2,6 +2,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from app.db.session import Base
 from datetime import datetime
+from app.models.user_role_assignments import UserRoleAssignment
 
 
 class UserRole(Base):
@@ -18,4 +19,7 @@ class UserRole(Base):
         onupdate=func.now()
     )
 
-    users = relationship("UserRoleAssignment", back_populates="role")
+    assignments = relationship(
+        "User",
+        secondary="user_role_assignments",
+        back_populates="roles")

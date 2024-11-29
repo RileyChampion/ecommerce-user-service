@@ -38,7 +38,7 @@ def seed_data(db):
     for user in users:
         UserAddressFactory.create(db, user_id=user.id)
         UserPreferenceFactory.create(db, user_id=user.id)
-        if user.id % 10 == 0:
+        if user.id % 10 == 0 or user.id == 31:
             UserRoleAssignmentFactory.create(db, user_id=user.id, role_id=admin.role_id)
         else:
             UserRoleAssignmentFactory.create(db, user_id=user.id, role_id=customer.role_id)

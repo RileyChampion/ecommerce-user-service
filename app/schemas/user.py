@@ -35,6 +35,13 @@ class UserPasswordUpdate(BaseModel):
 
 class UserResponse(UserBase):
     id: int
+
+    class Config:
+        orm_mode = True
+
+
+class UserResponseWithRelaltionships(UserBase):
+    id: int
     addresses: List[UserAddressResponse]
     preferences: List[UserPreferenceResponse]
     roles: List[UserRoleResponse]

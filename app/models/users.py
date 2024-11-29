@@ -2,6 +2,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from app.db.session import Base
 from datetime import datetime
+from app.models.user_role_assignments import UserRoleAssignment
 
 
 class User(Base):
@@ -29,5 +30,9 @@ class User(Base):
     )
 
     addresses = relationship("UserAddress", back_populates="user", cascade='all, delete')
-    roles = relationship("UserRoleAssignment", back_populates="user", cascade='all, delete')
+    roles = relationship(
+        "UserRole",
+        secondary="user_role_assignments",
+        back_populates="assignments"
+    )
     preferences = relationship("UserPreference", back_populates="user", cascade='all, delete')

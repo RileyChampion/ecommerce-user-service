@@ -1,14 +1,13 @@
-from fastapi import APIRouter, Path, Depends
+from fastapi import APIRouter, Path, Depends, HTTPException
 from typing import Annotated
 from app.models.users import User
 from app.core.security import (
     get_current_user
 )
-# from fastapi import APIRouter, Depends, HTTPException
-# from sqlalchemy.orm import Session
+from app.core.dependencies import get_db
+from sqlalchemy.orm import Session
 # from app.schemas.user import UserCreate, UserOut
-# from app.crud.user import create_user
-# from app.core.dependencies import get_db
+
 
 router = APIRouter()
 
@@ -19,7 +18,8 @@ class PreferenceFilter:
 
 @router.get("/all", tags=["Preferences"])
 async def get_all_user_preferences(
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
+    db_session: Session = Depends(get_db)
 ):
     return []
 

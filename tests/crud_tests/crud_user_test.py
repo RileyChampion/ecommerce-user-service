@@ -9,12 +9,36 @@ from app.crud.user import (
 )
 from app.models.users import User
 from app.schemas.user import UserCreate, UserInfoUpdate, UserPasswordUpdate
+from app.schemas.filters import UserFilter
 
 
 def test_get_all_users(db_session, batch_create_users):
+    test_filter = UserFilter(
+        limit=10,
+        offset=0
+    )
     batch_create_users(10)
-    users = get_all_users(db_session)
+    users = get_all_users(db_session, test_filter)
     assert len(users) == 10
+
+
+def test_get_all_users_with_filters(db_session, create_user, batch_create_users):
+    test_user: User = create_user()
+    test_filter = UserFilter(
+        limit=11,
+        offset=0,
+        user_id=test_user.id,
+        username=test_user.username,
+        first_name=test_user.first_name,
+        last_name=test_user.last_name,
+        email=test_user.email,
+        telephone=test_user.telephone,
+    )
+
+    users = get_all_users(db_session, test_filter)
+    assert len(users) == 1
+
+    assert users[0] == test_user
 
 
 def test_get_user(db_session, create_user):

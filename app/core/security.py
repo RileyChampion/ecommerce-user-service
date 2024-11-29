@@ -111,3 +111,11 @@ def login_user(db: Session, username: str, password: str):
         expires_delta=timedelta(settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+def is_admin(user: User):
+    for role in user.roles:
+        if role.role_name == "Admin":
+            return True
+    
+    return False

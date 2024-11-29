@@ -24,7 +24,7 @@ class UserAddressToggleIsPrimary(BaseModel):
 
 
 class UserAddressResponse(UserAddressBase):
-    address_id: int
+    is_primary: bool
 
     class Config:
         orm_mode = True
