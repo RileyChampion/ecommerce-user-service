@@ -6,6 +6,7 @@ from app.models.user_role_assignments import UserRoleAssignment
 from app.models.user_role_assignments import UserRoleAssignment
 from app.schemas.user import UserCreate, UserInfoUpdate, UserPasswordUpdate
 from app.schemas.filters import UserFilter
+from app.core.security import get_password_hash
 
 
 def get_all_users(db: Session, filter_params: UserFilter) -> List[User]:
@@ -42,6 +43,14 @@ def get_user(db: Session, user_id: int) -> Union[User, None]:
     ).filter(User.id == user_id).first()
 
 
+def get_user_by_username(db: Session, username: str) -> Union[User, None]:
+    return db.query(User).options(
+        joinedload(User.addresses),
+        joinedload(User.preferences),
+        joinedload(User.roles)
+    ).filter(User.username == username).first()
+
+
 def create_user(db: Session, user: UserCreate) -> User:
     created_user = User(
         username=user.username,
@@ -49,11 +58,13 @@ def create_user(db: Session, user: UserCreate) -> User:
         last_name=user.last_name,
         email=user.email,
         telephone=user.telephone,
-        hashed_password=user.password,
+        hashed_password=get_password_hash(user.password),
         profile_pic=user.profile_pic
     )
 
     db.add(created_user)
+    db.flush()  # Flush to create the ID
+    
     return created_user
 
 

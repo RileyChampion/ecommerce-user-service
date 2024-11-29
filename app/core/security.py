@@ -8,7 +8,6 @@ from app.config import settings
 from pydantic import BaseModel
 from app.core.dependencies import get_db
 from app.models.users import User
-from app.crud.user import get_user
 
 from jose import jwt, JWTError
 from passlib.context import CryptContext
@@ -81,9 +80,8 @@ def decode_access_token(token: Annotated[str, Depends(oauth2_scheme)]) -> Option
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
     token_data = decode_access_token(token)
-    print(token_data)
 
-    user = get_user(db, token_data.user_id)
+    user = db.query(User).filter(User.id == token_data.user_id).first()
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

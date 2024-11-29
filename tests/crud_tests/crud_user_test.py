@@ -49,7 +49,9 @@ def test_get_user(db_session, create_user):
     assert user.id == test_user.id
 
 
-def test_create_user(db_session):
+def test_create_user(mocker, db_session):
+    mocker.patch('app.crud.user.get_password_hash', return_value="super_strong_password")
+    
     test_create = UserCreate(
         username="usernameTest",
         first_name="John",
@@ -59,6 +61,7 @@ def test_create_user(db_session):
         password="super_strong_password",
         profile_pic="default.png"
     )
+
     created_user = create_user(db_session, test_create)
     
     assert created_user.username == "usernameTest"

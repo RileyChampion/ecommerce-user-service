@@ -11,10 +11,12 @@ from app.core.security import (
 )
 from app.crud.user import (
     get_all_users,
-    get_user
+    get_user,
+    create_user,
+    delete_user
 )
 from app.schemas.filters import UserFilter
-from app.schemas.user import UserResponse, UserResponseWithRelaltionships
+from app.schemas.user import UserResponse, UserResponseWithRelaltionships, UserCreate
 from app.schemas.user_role import UserRoleResponse
 from app.schemas.user_preference import UserPreferenceResponse
 from app.schemas.user_address import UserAddressResponse
@@ -96,34 +98,102 @@ async def get_user_id(
         return user_output
 
 
-@router.get("/{username}", status_code=200)
-async def get_user_username(
-    username: Annotated[str, Path(title="The USERNAME of a user to get")],
-    current_user: User = Depends(get_current_user)
-):
-    return {}
+# @router.get("/{username}", status_code=200)
+# async def get_user_username(
+#     username: Annotated[str, Path(title="The USERNAME of a user to get")],
+#     current_user: User = Depends(get_current_user),
+#     db_session: Session = Depends(get_db)
+# ):
+#     if current_user:
+#         user: User = get_user_by_username(db_session, username)
+        
+#         user_output = UserResponseWithRelaltionships(
+#             id=user.id,
+#             username=user.username,
+#             first_name=user.first_name,
+#             last_name=user.last_name,
+#             email=user.email,
+#             telephone=user.telephone,
+#             profile_pic=user.profile_pic,
+#             addresses=[
+#                 UserAddressResponse(
+#                     address_line1=address.address_line1,
+#                     address_line2=address.address_line2,
+#                     city=address.city,
+#                     state=address.state,
+#                     zip_code=address.zip_code,
+#                     country_code=address.country_code,
+#                     is_primary=address.is_primary
+#                 ) for address in user.addresses
+#             ],
+#             roles=[
+#                 UserRoleResponse(
+#                     role_name=role.role_name
+#                 ) for role in user.roles
+#             ],
+#             preferences=[
+#                 UserPreferenceResponse(
+#                     preference_type=preference.preference_type,
+#                     preference_value=preference.preference_value
+#                 ) for preference in user.preferences
+#             ]
+#         )
+
+#         return user_output
 
 
 @router.post("/create", status_code=201)
-async def create_user(
-    current_user: User = Depends(get_current_user)
+async def create_new_user(
+    user_create_payload: UserCreate,
+    current_user: User = Depends(get_current_user),
+    db_session: Session = Depends(get_db)
 ):
-    if current_user:
-        pass
+    try:
+        if current_user:
+            created_user: User = create_user(db_session, user_create_payload)
+
+            created_user_response = UserResponse(
+                id=created_user.id,
+                username=created_user.username,
+                first_name=created_user.first_name,
+                last_name=created_user.last_name,
+                email=created_user.email,
+                telephone=created_user.telephone,
+                profile_pic=created_user.profile_pic
+            )
+
+            db_session.commit()
+            return created_user_response
+    except Exception as e:
+        db_session.rollback()
+        print(e.args)
+        raise e
 
 
 @router.delete("/delete/{user_id}")
-async def delete_user(
+async def delete_user_from_service(
     user_id: Annotated[int, Path(title="The ID of a user to get")],
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
+    db_session: Session = Depends(get_db)
 ):
-    if is_admin(current_user) or current_user.id == user_id:
-        return {"messages": "Deleted"}
-    else:
+    try:
+        if is_admin(current_user) or current_user.id == user_id:
+            delete_user(db_session, user_id)
+            db_session.commit()
+
+            return {"messages": "Deleted user."}
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Unauthorized request.",
+                headers={"WWW-Authenticate": "Bearer"}
+            )
+    except ValueError as e:
+        db_session.rollback()
+        
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Unauthorized request.",
-            headers={"WWW-Authenticate": "Bearer"}
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Unable to delete entered user"
         )
 
 

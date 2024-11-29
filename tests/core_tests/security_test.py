@@ -181,10 +181,22 @@ def test_get_current_user(mocker):
     )
 
     mocker.patch("app.core.security.decode_access_token", return_value=test_token_data)
-    mocker.patch("app.core.security.get_user", return_value=test_user)
+    mocker.patch("app.crud.user.get_password_hash", return_value="super_strong_password")
+
+    # Mocking the query chain
+    mock_query = mocker.MagicMock()
+    mock_filter = mocker.MagicMock()
+
+    mock_query.filter.return_value = mock_filter
+    mock_filter.first.return_value = test_user
+
+    # Mock the database session
+    mock_db = mocker.MagicMock()
+    mock_db.query.return_value = mock_query
 
     returned_user = get_current_user(
-        "fake_token_string"
+        "fake_token_string",
+        db=mock_db
     )
 
     assert returned_user.id == test_user.id
@@ -225,13 +237,21 @@ def test_get_current_user_no_user_found(mocker):
         expires=123456789
     )
 
-    test_user = None
-
     mocker.patch("app.core.security.decode_access_token", return_value=test_token_data)
-    mocker.patch("app.core.security.get_user", return_value=test_user)
+    
+    # Mocking the query chain
+    mock_query = mocker.MagicMock()
+    mock_filter = mocker.MagicMock()
+
+    mock_query.filter.return_value = mock_filter
+    mock_filter.first.return_value = None
+
+    # Mock the database session
+    mock_db = mocker.MagicMock()
+    mock_db.query.return_value = mock_query
 
     with pytest.raises(HTTPException) as exec_job:
-        get_current_user("fake_token_string")
+        get_current_user("fake_token_string", db=mock_db)
     
     assert exec_job.value.status_code == 401
     assert exec_job.value.detail == "User not found."
