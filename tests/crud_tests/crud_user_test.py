@@ -2,6 +2,7 @@ import pytest
 from app.crud.user import (
     get_all_users,
     get_user,
+    get_user_by_username,
     create_user,
     update_user_info,
     update_user_password,
@@ -47,6 +48,16 @@ def test_get_user(db_session, create_user):
     )
     user = get_user(db_session, test_user.id)
     assert user.id == test_user.id
+
+
+def test_get_user_by_username(db_session, create_user):
+    test_user = create_user(
+        username="TESTUSERNAME"
+    )
+
+    user = get_user_by_username(db_session, "TESTUSERNAME")
+
+    assert test_user == user
 
 
 def test_create_user(mocker, db_session):

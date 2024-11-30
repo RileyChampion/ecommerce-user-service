@@ -13,8 +13,10 @@ from app.core.security import (
     get_current_user,
     authenticate_user,
     login_user,
+    is_admin,
     TokenData
 )
+from app.models.user_roles import UserRole
 
 
 def test_get_password_hash(mocker):
@@ -365,3 +367,28 @@ def test_login_user(mocker):
     assert "token_type" in token
     assert token["access_token"] == "test_access_token"
     assert token["token_type"] == "bearer"
+
+
+def test_is_admin(mocker, create_user):
+    test_user = create_user()
+    test_user.roles = [
+        UserRole(
+            role_name="Admin"
+        ),
+        UserRole(
+            role_name="Not Admin"
+        )
+    ]
+
+    assert is_admin(test_user) is True
+
+
+def test_is_admin_not_admin(mocker, create_user):
+    test_user = create_user()
+    test_user.roles = [
+        UserRole(
+            role_name="Not Admin"
+        )
+    ]
+
+    assert is_admin(test_user) is False

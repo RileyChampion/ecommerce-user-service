@@ -190,7 +190,7 @@ async def delete_user_from_service(
             )
     except ValueError as e:
         db_session.rollback()
-        
+
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Unable to delete entered user"
@@ -202,6 +202,7 @@ async def update_user(
     user_id: Annotated[int, Path(title="The ID of a user to get")],
     current_user: User = Depends(get_current_user)
 ):
+    # TODO:  Update user information
     if is_admin(current_user) or current_user.id == user_id:
         return {"messages": "Updated"}
     else:
@@ -214,6 +215,7 @@ async def update_user(
 
 @router.post("/login")
 async def login(current_user: User = Depends(get_current_user)):
+    # TODO:  Login Route
     return {}
 
 
