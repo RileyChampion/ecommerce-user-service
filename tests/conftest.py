@@ -5,12 +5,13 @@ from app.db.session import Base
 from app.core.dependencies import get_db
 from app.main import app
 from fastapi.testclient import TestClient
+from app.models.users import User
 from app.db.factories.user_role_factory import UserRoleFactory
 from app.db.factories.user_factory import UserFactory
 from app.db.factories.user_address_factory import UserAddressFactory
 from app.db.factories.user_preference_factory import UserPreferenceFactory
 from app.db.factories.user_role_assignment_factory import UserRoleAssignmentFactory
-from app.core.security import verify_password
+from app.core.security import verify_password, get_current_user
 
 SQLALCHEMY_TEST_DATABASE_URL = "sqlite:///./test.db"
 engine = create_engine(SQLALCHEMY_TEST_DATABASE_URL, connect_args={"check_same_thread": False})
@@ -98,13 +99,28 @@ def batch_create_preferences(db_session):
 @pytest.fixture
 def client():
     def override_get_db():
+        Base.metadata.create_all(bind=engine)
         db = TestingSessionLocal()
         try:
             yield db
         finally:
             db.close()
+            Base.metadata.drop_all(bind=engine)
+    
+    def override_get_current_user():
+        return User(
+            id=100,
+            username="test_user_name",
+            first_name="John",
+            last_name="Doe",
+            email="example@email.com",
+            telephone="757-348-5869",
+            hashed_password="super_strong_password"
+        )
 
     app.dependency_overrides[get_db] = override_get_db
+    app.dependency_overrides[get_current_user] = override_get_current_user
+    # print(app.routes)
     with TestClient(app) as c:
         yield c
     app.dependency_overrides.clear()
@@ -116,3 +132,8 @@ def use_verify_password():
     def _use_verify_password(plain_pass: str, hashed_pass: str):
         return verify_password(plain_pass, hashed_pass)
     return _use_verify_password
+
+
+@pytest.fixture
+def retrieve_test_oauth_token():
+    return "fake_token"

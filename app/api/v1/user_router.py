@@ -23,12 +23,6 @@ from app.schemas.user_preference import UserPreferenceResponse
 from app.schemas.user_address import UserAddressResponse
 from app.schemas.requests import LoginRequest, LogoutRequest
 
-# from fastapi import APIRouter, Depends, HTTPException
-# from sqlalchemy.orm import Session
-# from app.schemas.user import UserCreate, UserOut
-# from app.crud.user import create_user
-# from app.core.dependencies import get_db
-
 router = APIRouter()
 
 
@@ -250,4 +244,3 @@ async def logout(
         db_session.commit()
 
         return {"message": "Successfully logged out."}
-
