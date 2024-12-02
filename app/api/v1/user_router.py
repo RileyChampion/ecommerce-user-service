@@ -6,6 +6,7 @@ from app.models.users import User
 
 from app.core.dependencies import get_db
 from app.core.security import (
+    verify_password,
     get_current_user,
     is_admin
 )
@@ -20,6 +21,7 @@ from app.schemas.user import UserResponse, UserResponseWithRelaltionships, UserC
 from app.schemas.user_role import UserRoleResponse
 from app.schemas.user_preference import UserPreferenceResponse
 from app.schemas.user_address import UserAddressResponse
+from app.schemas.requests import LoginRequest, LogoutRequest
 
 # from fastapi import APIRouter, Depends, HTTPException
 # from sqlalchemy.orm import Session
@@ -148,6 +150,7 @@ async def create_new_user(
     current_user: User = Depends(get_current_user),
     db_session: Session = Depends(get_db)
 ):
+    #  TODO: NEED TO CREATE DEFAULT ROLE AND DEFAULT PREFERENCES
     try:
         if current_user:
             created_user: User = create_user(db_session, user_create_payload)
@@ -214,13 +217,37 @@ async def update_user(
 
 
 @router.post("/login")
-async def login(current_user: User = Depends(get_current_user)):
+async def login(
+    login_credentials: LoginRequest,
+    current_user: User = Depends(get_current_user),
+    db_session: Session = Depends(get_db)
+):
     # TODO:  Login Route
-    return {}
+    if (
+        current_user
+        and current_user.username == login_credentials.username
+        and verify_password(login_credentials.password, current_user.hashed_password)
+    ):
+        current_user.is_active = True
+        db_session.commit()
 
+        return {"message": "Successfully logged in."}
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Incorrect username or password.",
+        )
+        
 
 @router.post("/logout")
 async def logout(
-    current_user: User = Depends(get_current_user)
+    logging_out_user: LogoutRequest,
+    current_user: User = Depends(get_current_user),
+    db_session: Session = Depends(get_db)
 ):
-    pass
+    if current_user.id == logging_out_user.user_id:
+        current_user.is_active = False
+        db_session.commit()
+
+        return {"message": "Successfully logged out."}
+
