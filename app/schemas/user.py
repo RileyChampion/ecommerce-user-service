@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel, EmailStr
 from app.schemas.user_address import UserAddressResponse
 from app.schemas.user_preference import UserPreferenceResponse
@@ -11,12 +11,11 @@ class UserBase(BaseModel):
     last_name: str
     email: EmailStr
     telephone: str
-    profile_pic: str
+    profile_pic: Optional[str] = None
 
 
 class UserCreate(UserBase):
     password: str
-    profile_pic: str
 
 
 class UserInfoUpdate(BaseModel):

@@ -2,6 +2,7 @@ from fastapi import APIRouter, Path, Query, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 from typing import Annotated, Literal, List
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from app.models.users import User
 
 from app.core.dependencies import get_db
@@ -14,10 +15,11 @@ from app.crud.user import (
     get_all_users,
     get_user,
     create_user,
-    delete_user
+    delete_user,
+    update_user_info
 )
 from app.schemas.filters import UserFilter
-from app.schemas.user import UserResponse, UserResponseWithRelaltionships, UserCreate
+from app.schemas.user import UserResponse, UserResponseWithRelaltionships, UserCreate, UserInfoUpdate
 from app.schemas.user_role import UserRoleResponse
 from app.schemas.user_preference import UserPreferenceResponse
 from app.schemas.user_address import UserAddressResponse
@@ -26,7 +28,7 @@ from app.schemas.requests import LoginRequest, LogoutRequest
 router = APIRouter()
 
 
-@router.get("/users", status_code=200, response_model=List[UserResponse])
+@router.get("/users", status_code=status.HTTP_200_OK, response_model=List[UserResponse])
 async def get_users(
     filter_query: Annotated[UserFilter, Query()],
     current_user: User = Depends(get_current_user),
@@ -50,7 +52,7 @@ async def get_users(
         return user_output
 
 
-@router.get("/{user_id}", status_code=200)
+@router.get("/{user_id}", status_code=status.HTTP_200_OK)
 async def get_user_id(
     user_id: Annotated[int, Path(title="The ID of a user to get")],
     current_user: User = Depends(get_current_user),
@@ -94,9 +96,9 @@ async def get_user_id(
         return user_output
 
 
-# @router.get("/{username}", status_code=200)
+# @router.get("/search", status_code=200)
 # async def get_user_username(
-#     username: Annotated[str, Path(title="The USERNAME of a user to get")],
+#     username: Annotated[str, Query()],
 #     current_user: User = Depends(get_current_user),
 #     db_session: Session = Depends(get_db)
 # ):
@@ -138,7 +140,7 @@ async def get_user_id(
 #         return user_output
 
 
-@router.post("/create", status_code=201)
+@router.post("/create", status_code=status.HTTP_201_CREATED)
 async def create_new_user(
     user_create_payload: UserCreate,
     current_user: User = Depends(get_current_user),
@@ -161,13 +163,16 @@ async def create_new_user(
 
             db_session.commit()
             return created_user_response
-    except Exception as e:
+    except IntegrityError as e:
         db_session.rollback()
-        print(e.args)
-        raise e
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='Username already taken.',
+            headers={"WWW-Authenticate": "Bearer"}
+        )
 
 
-@router.delete("/delete/{user_id}")
+@router.delete("/delete/{user_id}", status_code=status.HTTP_200_OK)
 async def delete_user_from_service(
     user_id: Annotated[int, Path(title="The ID of a user to get")],
     current_user: User = Depends(get_current_user),
@@ -190,23 +195,35 @@ async def delete_user_from_service(
 
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Unable to delete entered user"
+            detail="Unable to delete entered user."
         )
 
 
 @router.patch("/update/{user_id}")
 async def update_user(
+    updated_user_info: UserInfoUpdate,
     user_id: Annotated[int, Path(title="The ID of a user to get")],
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
+    db_session: Session = Depends(get_db)
 ):
     # TODO:  Update user information
-    if is_admin(current_user) or current_user.id == user_id:
-        return {"messages": "Updated"}
-    else:
+    try:
+        if is_admin(current_user) or current_user.id == user_id:
+            update_user_info(db_session, user_id, updated_user_info)
+            
+            return {"messages": "Updated user."}
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Unauthorized request.",
+                headers={"WWW-Authenticate": "Bearer"}
+            )
+    except ValueError as e:
+        db_session.rollback()
+
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Unauthorized request.",
-            headers={"WWW-Authenticate": "Bearer"}
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Unable to update entered user."
         )
 
 
